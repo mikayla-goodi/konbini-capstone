@@ -1,0 +1,31 @@
+{
+  "name": "konbini-capstone",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "React (Vite) capstone project for CIT 382: a Konbini Tracker that lists items by store, supports filtering, and lets users favorite items.",
+  "main": "index.js",
+  "scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikayla-goodi/konbini-capstone.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mikayla-goodi/konbini-capstone/issues"
+  },
+  "homepage": "https://github.com/mikayla-goodi/konbini-capstone#readme",
+  "dependencies": {
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.2",
+    "vite": "^7.3.1"
+  }
+}

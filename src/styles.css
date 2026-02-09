@@ -1,0 +1,248 @@
+:root {
+    /* Overall "cute konbini pop" base */
+    --bg: #fff;
+    --soft: #fff0f6;      /* light pink */
+    --card: #ffffff;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #f3d0df;    /* pink border */
+    --shadow: 0 10px 28px rgba(0,0,0,0.06);
+  
+    --accent: #ec4899;    /* hot pink */
+    --accent-soft: rgba(236, 72, 153, 0.12);
+  
+    /* Store brand accents */
+    --seven-green: #007A33;
+    --seven-red:   #E2231A;
+    --seven-orange:#FF6A13;
+  
+    --fam-green:   #00A651;
+    --fam-blue:    #0066B3;
+  
+    --lawson-blue: #005BAC;
+  
+    --mini-yellow: #F7D000;
+    --mini-blue:   #0066B3;
+    --mini-orange: #FF6A13;
+  }  
+  
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--soft);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  }
+  
+  a { color: inherit; }
+  
+  .container {
+    max-width: 980px;
+    margin: 28px auto;
+    padding: 18px;
+  }
+  
+  .headerCard {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+  }
+  
+  .title {
+    margin: 0 0 6px;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+  }
+  
+  .subtitle {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  
+  .navRow {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  
+  .navPill {
+    border: 1px solid var(--border);
+    background: #fff;
+  }
+  
+  .navPill.active {
+    border-color: rgba(236, 72, 153, 0.35);
+    background: var(--accent-soft);
+  }
+  
+  .cardItem {
+    border: 1px solid var(--border);
+  }  
+  
+  .sectionCard {
+    margin-top: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+  
+  .row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
+  .label {
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 14px;
+  }
+  
+  .select, .input {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    outline: none;
+  }
+  
+  .select:focus, .input:focus {
+    border-color: rgba(37, 99, 235, 0.55);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+  }
+  
+  .grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  @media (max-width: 680px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+  
+  .cardItem {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px;
+    background: #fff;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+  
+  .cardItem:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.08);
+  }
+  
+  .itemTop {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: start;
+  }
+  
+  .itemName {
+    font-weight: 800;
+    text-decoration: none;
+  }
+  
+  .meta {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  
+  .iconBtn {
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 12px;
+    padding: 8px 10px;
+    cursor: pointer;
+  }
+  
+  .iconBtn:hover {
+    border-color: rgba(236, 72, 153, 0.35);
+    background: rgba(236, 72, 153, 0.08);
+  }
+  
+  .badge {
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(249, 115, 22, 0.14);
+    color: #9a3412;
+    margin-left: 8px;
+  }
+
+  .storeBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #fff;
+    margin-top: 8px;
+  }
+  
+  .storeDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    display: inline-block;
+  }
+
+  .detailCard {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px;
+    background: #fff;
+  }  
+  
+  /* 7-Eleven: green / red / orange */
+  .storeBadge.seven {
+    border-color: rgba(0, 122, 51, 0.25);
+  }
+  .storeBadge.seven .dot-g { background: var(--seven-green); }
+  .storeBadge.seven .dot-r { background: var(--seven-red); }
+  .storeBadge.seven .dot-o { background: var(--seven-orange); }
+  
+  /* FamilyMart: green / blue / white vibe */
+  .storeBadge.family {
+    border-color: rgba(0, 102, 179, 0.25);
+  }
+  .storeBadge.family .dot-g { background: var(--fam-green); }
+  .storeBadge.family .dot-b { background: var(--fam-blue); }
+  .storeBadge.family .dot-w { background: #ffffff; border: 1px solid var(--border); }
+  
+  /* Lawson: blue / white */
+  .storeBadge.lawson {
+    border-color: rgba(0, 91, 172, 0.25);
+  }
+  .storeBadge.lawson .dot-b { background: var(--lawson-blue); }
+  .storeBadge.lawson .dot-w { background: #ffffff; border: 1px solid var(--border); }
+  
+  /* Ministop: yellow / blue / orange */
+  .storeBadge.ministop {
+    border-color: rgba(247, 208, 0, 0.35);
+  }
+  .storeBadge.ministop .dot-y { background: var(--mini-yellow); }
+  .storeBadge.ministop .dot-b { background: var(--mini-blue); }
+  .storeBadge.ministop .dot-o { background: var(--mini-orange); }
+
+  
+  

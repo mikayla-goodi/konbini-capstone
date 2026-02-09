@@ -1,87 +1,160 @@
-import { useMemo, useState } from "react";
-import { ITEMS, STORES, CATEGORIES } from "./data/items";
+import { useEffect, useMemo, useState } from "react";
+import { Routes, Route, NavLink, Navigate } from "react-router-dom";
+// added NavLink for active link styling
+import { ITEMS, STORES, CATEGORIES } from "./data/items"; // keep for now
 import StoreTabs from "./components/StoreTabs";
 import ItemList from "./components/ItemList";
+import ItemDetailPage from "./data/pages/ItemDetailPage";
+import NewView from "./NewView";
+import BrowsePage from "./data/pages/BrowsePage";
+import FavoritesPage from "./data/pages/FavoritesPage";
 
 export default function App() {
-  // view switching requirement
-  const [view, setView] = useState("browse"); // "browse" | "favorites"
-
   // filter state
   const [selectedStore, setSelectedStore] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [search, setSearch] = useState("");
 
   // favorites state
-  const [favorites, setFavorites] = useState([]);
+  // const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] = useState(() => {
+    try {
+      const raw = localStorage.getItem("konbini:favorites");
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  });
 
   function toggleFavorite(itemId) {
-    setFavorites((prev) => (prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId]));
+    setFavorites((prev) =>
+      prev.includes(itemId)
+        ? prev.filter((id) => id !== itemId)
+        : [...prev, itemId]
+    );
   }
 
+  useEffect(() => {
+    localStorage.setItem("konbini:favorites", JSON.stringify(favorites));
+  }, [favorites]);
+
   const visibleItems = useMemo(() => {
+    const q = search.trim().toLowerCase();
+
     return ITEMS.filter((item) => {
-      const storeOk = selectedStore === "all" ? true : item.store === selectedStore;
-      const catOk = selectedCategory === "all" ? true : item.category === selectedCategory;
-      return storeOk && catOk;
+      const storeOk =
+        selectedStore === "all" ? true : item.store === selectedStore;
+      const catOk =
+        selectedCategory === "all" ? true : item.category === selectedCategory;
+      const searchOk = q === "" ? true : item.name.toLowerCase().includes(q);
+
+      return storeOk && catOk && searchOk;
     });
-  }, [selectedStore, selectedCategory]);
+  }, [selectedStore, selectedCategory, search]);
 
   const favoriteItems = useMemo(() => {
     return ITEMS.filter((item) => favorites.includes(item.id));
   }, [favorites]);
 
-  return (
-    <div style={{ maxWidth: 900, margin: "24px auto", padding: 16, fontFamily: "system-ui, Arial" }}>
-      <h1 style={{ marginBottom: 6 }}>Konbini Tracker</h1>
-      <p style={{ marginTop: 0, opacity: 0.8 }}>
-        Browse items across 7-Eleven, Lawson, FamilyMart, and Ministop. Favorite items to create a changing “Top picks”
-        list later.
-      </p>
+  const topPicksByStore = useMemo(() => {
+    const favItems = ITEMS.filter((i) => favorites.includes(i.id));
+    const groups = {};
 
-      {/* View switching */}
-      <div style={{ display: "flex", gap: 10, margin: "12px 0 18px" }}>
-        <button onClick={() => setView("browse")} aria-pressed={view === "browse"}>
-          Browse
-        </button>
-        <button onClick={() => setView("favorites")} aria-pressed={view === "favorites"}>
-          Favorites ({favorites.length})
-        </button>
+    for (const item of favItems) {
+      groups[item.store] = groups[item.store] || [];
+      groups[item.store].push(item);
+    }
+
+    // limit to 3 per store
+    for (const store of Object.keys(groups)) {
+      groups[store] = groups[store].slice(0, 3);
+    }
+
+    return groups;
+  }, [favorites]);
+
+  return (
+    <div className="container">
+      <div className="headerCard">
+        <h1 className="title">Konbini Tracker</h1>
+        <p className="subtitle">
+          Browse items across 7-Eleven, Lawson, FamilyMart, and Ministop.
+          Favorite items to build your “Top picks.”
+        </p>
+
+        <div className="navRow">
+          <NavLink
+            to="/browse"
+            className={({ isActive }) => `navPill ${isActive ? "active" : ""}`}
+          >
+            Browse
+          </NavLink>
+
+          <NavLink
+            to="/favorites"
+            className={({ isActive }) => `navPill ${isActive ? "active" : ""}`}
+          >
+            Favorites ({favorites.length})
+          </NavLink>
+
+          <NavLink
+            to="/new"
+            className={({ isActive }) => `navPill ${isActive ? "active" : ""}`}
+          >
+            New
+          </NavLink>
+        </div>
       </div>
 
-      {view === "browse" && (
-        <>
-          <StoreTabs stores={STORES} selectedStore={selectedStore} onSelectStore={setSelectedStore} />
+      <div className="sectionCard">
+        <Routes>
+          <Route
+            path="/browse"
+            element={
+              <BrowsePage
+                stores={STORES}
+                categories={CATEGORIES}
+                selectedStore={selectedStore}
+                onSelectStore={setSelectedStore}
+                selectedCategory={selectedCategory}
+                onSelectCategory={setSelectedCategory}
+                search={search}
+                onSearch={setSearch}
+                items={visibleItems}
+                favorites={favorites}
+                onToggleFavorite={toggleFavorite}
+              />
+            }
+          />
 
-          <div style={{ marginTop: 12 }}>
-            <label>
-              Category:&nbsp;
-              <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
+          <Route
+            path="/favorites"
+            element={
+              <FavoritesPage
+                favoriteItems={favoriteItems}
+                favorites={favorites}
+                onToggleFavorite={toggleFavorite}
+                topPicksByStore={topPicksByStore}
+              />
+            }
+          />
 
-          <div style={{ marginTop: 14 }}>
-            <ItemList items={visibleItems} favorites={favorites} onToggleFavorite={toggleFavorite} />
-          </div>
-        </>
-      )}
+          <Route
+            path="/items/:id"
+            element={
+              <ItemDetailPage
+                items={ITEMS}
+                favorites={favorites}
+                onToggleFavorite={toggleFavorite}
+              />
+            }
+          />
 
-      {view === "favorites" && (
-        <>
-          <h2 style={{ marginTop: 0 }}>Your Favorites</h2>
-          <p style={{ opacity: 0.8 }}>
-            This view will eventually become the “Top 3 per store” feature. Right now it’s a simple favorites list.
-          </p>
-          <ItemList items={favoriteItems} favorites={favorites} onToggleFavorite={toggleFavorite} />
-        </>
-      )}
+          <Route path="/" element={<Navigate to="/browse" replace />} />
+          <Route path="*" element={<Navigate to="/browse" replace />} />
+          <Route path="/new" element={<NewView />} />
+        </Routes>
+      </div>
     </div>
   );
 }
-
-
